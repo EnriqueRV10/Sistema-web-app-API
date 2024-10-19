@@ -1,5 +1,5 @@
-RUTA A ambiente virtual: /Users/enriquerv/AngularApps/env
-RUTA A proyecto: /Users/enriquerv/AngularApps/sistema_buap_api
+RUTA A ambiente virtual: cd /Users/enriquerv/AngularApps/env
+RUTA A proyecto: cd /Users/enriquerv/AngularApps/sistema_buap_api
 
 Comando para activar ambiente virtual: source sistema_buap/bin/activate
 

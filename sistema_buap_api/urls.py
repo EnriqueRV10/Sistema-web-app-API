@@ -18,12 +18,16 @@ from django.urls import path
 from sistema_buap_api.views import bootstrap
 from sistema_buap_api.views import users
 from sistema_buap_api.views import auth
+from sistema_buap_api.views import alumnos
+
 
 urlpatterns = [
     #Version
         path('bootstrap/version', bootstrap.VersionView.as_view()),
     #Create Admin
         path('admin/', users.AdminView.as_view()),
+    #Create Alumno
+        path('alumno/', alumnos.AlumnoView.as_view()),
     #Login
         path('token/', auth.CustomAuthToken.as_view()),
     #Logout
