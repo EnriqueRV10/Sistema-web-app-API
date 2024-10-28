@@ -19,6 +19,7 @@ from sistema_buap_api.views import bootstrap
 from sistema_buap_api.views import users
 from sistema_buap_api.views import auth
 from sistema_buap_api.views import alumnos
+from sistema_buap_api.views import maestros
 
 
 urlpatterns = [
@@ -28,6 +29,8 @@ urlpatterns = [
         path('admin/', users.AdminView.as_view()),
     #Create Alumno
         path('alumno/', alumnos.AlumnoView.as_view()),
+    #Create Maestro
+        path('maestro/', maestros.MaestroView.as_view()),
     #Login
         path('token/', auth.CustomAuthToken.as_view()),
     #Logout
