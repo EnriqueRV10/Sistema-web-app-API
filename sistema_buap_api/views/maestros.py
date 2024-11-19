@@ -30,12 +30,18 @@ import string
 import random
 import json
 
-class Userme(generics.CreateAPIView):
+class MaestrosAll(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
-        user = request.user
-        #TODO: Regresar perfil del usuario
-        return Response({})
+        maestros = Maestros.objects.filter(user__is_active = 1).order_by("id")
+        maestros = MaestroSerializer(maestros, many=True).data
+        #Aquí convertimos los valores de nuevo a un array
+        if not maestros:
+            return Response({},400)
+        for maestro in maestros:
+            maestro["materias_json"] = json.loads(maestro["materias_json"])
+
+        return Response(maestros, 200)
 
 class MaestroView(generics.CreateAPIView):
     # Obtener maestro por ID
