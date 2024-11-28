@@ -95,3 +95,31 @@ class AlumnoView(generics.CreateAPIView):
             return Response({"alumno_created_id": alumno.id}, 201)
 
         return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AlumnosViewEdit(generics.CreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def put(self, request, *args, **kwargs):
+        alumno = get_object_or_404(Alumnos, id=request.data["id"])
+        alumno.clave_alumno = request.data["clave_alumno"]
+        alumno.telefono = request.data["telefono"]
+        alumno.rfc = request.data["rfc"]
+        alumno.edad = request.data["edad"]
+        alumno.ocupacion = request.data["ocupacion"]
+        alumno.fecha_nacimiento = request.data["fecha_nacimiento"]
+        alumno.curp = request.data["curp"]
+        alumno.save()
+        temp = alumno.user
+        temp.first_name = request.data["first_name"]
+        temp.last_name = request.data["last_name"]
+        temp.save()
+        user = AlumnoSerializer(alumno, many=False).data
+
+        return Response(user, 200)
+    
+    def delete(self, request, *args, **kwargs):
+        profile = get_object_or_404(Alumnos, id=request.GET.get("id"))
+        try:
+            profile.user.delete()
+            return Response({"details":"Alumno eliminado"},200)
+        except Exception as e:
+            return Response({"details":"Algo pasó al eliminar"},400)
