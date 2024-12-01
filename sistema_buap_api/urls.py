@@ -20,6 +20,7 @@ from sistema_buap_api.views import users
 from sistema_buap_api.views import auth
 from sistema_buap_api.views import alumnos
 from sistema_buap_api.views import maestros
+from sistema_buap_api.views.materias import MateriasAll, MateriaView, MateriasViewEdit
 
 
 urlpatterns = [
@@ -46,5 +47,9 @@ urlpatterns = [
     #Login
         path('token/', auth.CustomAuthToken.as_view()),
     #Logout
-        path('logout/', auth.Logout.as_view())
+        path('logout/', auth.Logout.as_view()),
+    #Materias
+    path('materia/', MateriaView.as_view(), name='materia'),
+    path('lista-materias/', MateriasAll.as_view(), name='lista_materias'),
+    path('materias-edit/', MateriasViewEdit.as_view(), name='materias_edit'),
 ]

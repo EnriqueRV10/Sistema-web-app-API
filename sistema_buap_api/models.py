@@ -57,3 +57,31 @@ class Maestros(models.Model):
 
     def __str__(self):
         return f"Perfil del maestro {self.user.first_name} {self.user.last_name}"
+    
+class Materias(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nrc = models.CharField(max_length=6, unique=True, null=True, blank=True)
+    nombre = models.CharField(max_length=255, null=True, blank=True)
+    seccion = models.CharField(max_length=3, null=True, blank=True)
+    dias_json = models.TextField(null=True, blank=True)  # Almacenará los días como JSON string
+    hora_inicio = models.TimeField(null=True, blank=True)
+    hora_fin = models.TimeField(null=True, blank=True)
+    salon = models.CharField(max_length=255, null=True, blank=True)
+    programa_educativo = models.IntegerField(null=True, blank=True)  # Solo guardamos el ID
+    profesor = models.ForeignKey(
+        'Maestros',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='materias_asignadas'
+    )
+    creditos = models.IntegerField(null=True, blank=True)
+    creation = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    update = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Materia: {self.nombre} - NRC: {self.nrc}"
+
+    class Meta:
+        verbose_name = 'Materia'
+        verbose_name_plural = 'Materias'
