@@ -29,6 +29,8 @@ from django.template.loader import render_to_string
 import string
 import random
 import json
+from datetime import timedelta
+from django.utils import timezone
 
 class AdminAll(generics.CreateAPIView):
     #Esta función es esencial para todo donde se requiera autorización de inicio de sesión (token)
@@ -97,32 +99,56 @@ class AdminView(generics.CreateAPIView):
 
 class AdminsViewEdit(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    #TODO:Esto se los explicaré después
-    #Contar el total de cada tipo de usuarios
     def get(self, request, *args, **kwargs):
-        #Obtener total de admins
-        admin = Administradores.objects.filter(user__is_active = 1).order_by("id")
+        # Obtener total de admins
+        admin = Administradores.objects.filter(user__is_active=1).order_by("id")
         lista_admins = AdminSerializer(admin, many=True).data
-        # Obtienes la cantidad de elementos en la lista
         total_admins = len(lista_admins)
 
-        #Obtener total de maestros
-        maestros = Maestros.objects.filter(user__is_active = 1).order_by("id")
+        # Obtener total de maestros
+        maestros = Maestros.objects.filter(user__is_active=1).order_by("id")
         lista_maestros = MaestroSerializer(maestros, many=True).data
-        #Aquí convertimos los valores de nuevo a un array
         if not lista_maestros:
-            return Response({},400)
+            return Response({}, 400)
         for maestro in lista_maestros:
             maestro["materias_json"] = json.loads(maestro["materias_json"])
-        
         total_maestros = len(lista_maestros)
 
-        #Obtener total de alumnos
-        alumnos = Alumnos.objects.filter(user__is_active = 1).order_by("id")
+        # Obtener total de alumnos
+        alumnos = Alumnos.objects.filter(user__is_active=1).order_by("id")
         lista_alumnos = AlumnoSerializer(alumnos, many=True).data
         total_alumnos = len(lista_alumnos)
 
-        return Response({'admins': total_admins, 'maestros': total_maestros, 'alumnos:':total_alumnos }, 200)
+        # Obtener registros mensuales
+        # Obtenemos la fecha actual
+        today = timezone.now()
+        # Obtenemos la fecha de hace 6 meses
+        six_months_ago = today - timedelta(days=180)
+
+        # Contamos registros por mes para cada tipo de usuario
+        registros_mensuales = {}
+        
+        # Combinamos todos los usuarios
+        all_users = list(admin) + list(maestros) + list(alumnos)
+        
+        for user in all_users:
+            # Usamos la fecha de creación del usuario
+            fecha_creacion = user.user.date_joined
+            if fecha_creacion >= six_months_ago:
+                mes = fecha_creacion.strftime('%B')  # Nombre del mes
+                if mes not in registros_mensuales:
+                    registros_mensuales[mes] = 0
+                registros_mensuales[mes] += 1
+
+        # Preparamos la respuesta con los nombres de claves correctos
+        response_data = {
+            'total_admins': total_admins,
+            'total_maestros': total_maestros,
+            'total_alumnos': total_alumnos,
+            'registros_mensuales': registros_mensuales
+        }
+
+        return Response(response_data, 200)
     
     #Editar administrador
     def put(self, request, *args, **kwargs):
