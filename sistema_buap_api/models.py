@@ -63,11 +63,11 @@ class Materias(models.Model):
     nrc = models.CharField(max_length=6, unique=True, null=True, blank=True)
     nombre = models.CharField(max_length=255, null=True, blank=True)
     seccion = models.CharField(max_length=3, null=True, blank=True)
-    dias_json = models.TextField(null=True, blank=True)  # Almacenará los días como JSON string
+    dias_json = models.TextField(null=True, blank=True)  
     hora_inicio = models.TimeField(null=True, blank=True)
     hora_fin = models.TimeField(null=True, blank=True)
     salon = models.CharField(max_length=255, null=True, blank=True)
-    programa_educativo = models.IntegerField(null=True, blank=True)  # Solo guardamos el ID
+    programa_educativo = models.IntegerField(null=True, blank=True) 
     profesor = models.ForeignKey(
         'Maestros',
         on_delete=models.CASCADE,

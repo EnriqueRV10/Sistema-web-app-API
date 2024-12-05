@@ -35,18 +35,15 @@ class MateriaView(generics.CreateAPIView):
             # Obtener el profesor
             profesor = get_object_or_404(Maestros, id=request.data.get("profesor_id"))
 
-            # Procesar dias_json solo si viene de form-data
             dias_json = request.data.get("dias_json", [])
             content_type = request.content_type or ''
             
             if 'form' in content_type.lower() and isinstance(dias_json, str):
-                # Solo procesar si viene de form-data y es string
                 try:
                     dias_json = json.loads(dias_json)
                 except json.JSONDecodeError:
                     pass
-
-            # Crear materia
+                
             materia = Materias.objects.create(
                 nrc=request.data.get("nrc"),
                 nombre=request.data.get("nombre"),
